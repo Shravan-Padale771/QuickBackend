@@ -9,6 +9,10 @@ import { customAlphabet } from 'nanoid'
 dotenv.config()
 
 const app = express()
+
+// ✅ Required for Render / Vercel / proxies
+app.set('trust proxy', 1)
+
 app.use(helmet())
 app.use(express.json({ limit: '200kb' }))
 
@@ -35,7 +39,7 @@ app.use(cors({
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 if (!supabaseUrl || !supabaseServiceRoleKey) {
-  console.warn('Missing Supabase credentials. Fill SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env')
+  console.warn('⚠️ Missing Supabase credentials. Fill SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in .env')
 }
 const supabase = createClient(supabaseUrl, supabaseServiceRoleKey)
 
@@ -154,5 +158,5 @@ app.delete('/api/admin/messages/:id', requireAdmin, async (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`)
+  console.log(`🚀 Backend running on port ${PORT}`)
 })
