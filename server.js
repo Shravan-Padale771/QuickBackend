@@ -10,11 +10,26 @@ dotenv.config()
 
 const app = express()
 app.use(helmet())
-app.use(cors())
 app.use(express.json({ limit: '200kb' }))
 
 const PORT = process.env.PORT || 8080
 const ADMIN_KEY = process.env.ADMIN_KEY
+
+const allowedOrigins = [
+  'http://localhost:5173',             // dev
+  'https://quicktext-six.vercel.app'   // production frontend
+]
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('CORS not allowed'))
+    }
+  },
+  credentials: true
+}))
 
 // Supabase client
 const supabaseUrl = process.env.SUPABASE_URL
